@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haidilao Thailand App</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: radial-gradient(circle at top, #b71c1c, #1b1b1b);
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+}
+
+/* ===== Dashboard Card ===== */
+.dashboard {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 12px;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+/* ===== Header ===== */
+.header {
+  background: linear-gradient(135deg, #c62828, #8e0000);
+  color: white;
+  padding: 22px;
+  text-align: center;
+}
+.header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+.header span {
+  font-size: 13px;
+  opacity: .9;
+}
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  background: #111;
+}
+.tabs button {
+  flex: 1;
+  padding: 14px;
+  font-size: 15px;
+  border: none;
+  background: transparent;
+  color: #aaa;
+  cursor: pointer;
+}
+.tabs button.active {
+  background: #c62828;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* ===== Content ===== */
+.content {
+  padding: 20px;
+}
+.hidden { display: none; }
+
+.label {
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #444;
+}
+
+input, select, textarea {
+  width: 100%;
+  margin-top: 6px;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+textarea {
+  resize: none;
+  height: 80px;
+}
+
+/* ===== Badge ===== */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: white;
+  margin-left: 8px;
+}
+.badge.green { background: #2e7d32; }
+.badge.yellow { background: #f9a825; color:#000; }
+.badge.red { background: #c62828; }
+
+/* ===== Buttons ===== */
+button.action {
+  width: 100%;
+  margin-top: 22px;
+  padding: 18px;
+  font-size: 18px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: bold;
+}
+button.green { background: #2e7d32; color:white; }
+button.yellow { background: #f9a825; }
+button.red {
+  background: linear-gradient(135deg,#d32f2f,#8e0000);
+  color: white;
+}
+
+/* ===== Footer ===== */
+.footer {
+  background: #111;
+  color: #aaa;
+  text-align: center;
+  font-size: 12px;
+  padding: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+  <div class="header">
+    <h2>🥢 Haidilao Internal System</h2>
+    <span>Central Festival Chiang Mai</span>
+  </div>
+
+  <div class="tabs">
+    <button id="tab1" class="active" onclick="showTab(1)">📋 แจกบัตรพนักงาน</button>
+    <button id="tab2" onclick="showTab(2)">🔥 จี้เจี้ยนพนักงาน</button>
+  </div>
+
+  <!-- แจกบัตร -->
+  <div id="content1" class="content">
+    <div class="label">👤 ชื่อพนักงาน</div>
+    <input id="emp" placeholder="เช่น สมชาย">
+
+    <div class="label">🧑‍💼 ผู้แจกบัตร</div>
+    <input id="giver" placeholder="หัวหน้ากะ / ผู้จัดการ">
+
+    <div class="label">
+      🎨 สีบัตร
+      <span id="badge" class="badge green">เขียว</span>
+    </div>
+    <select id="color" onchange="onColorChange()">
+      <option value="green">เขียว ความปลอดภัยด้านอาหาร</option>
+      <option value="yellow">เหลือง มาตรฐานอาหาร</option>
+      <option value="red">แดง พฤติกรรมพนักงาน</option>
+    </select>
+
+    <div class="label">📝 เหตุผล</div>
+    <textarea id="reason" placeholder="ระบุเหตุผลในการแจกบัตร"></textarea>
+
+    <div id="scoreWrap">
+      <div class="label">📉 หักคะแนน (เฉพาะเขียว)</div>
+      <input id="score" type="number" min="0" placeholder="เช่น 5">
+    </div>
+
+    <button id="btn" class="action green" onclick="sendCard()">✅ ส่งข้อมูล</button>
+  </div>
+
+  <!-- จี้เจี้ยน -->
+  <div id="content2" class="content hidden">
+    <h3 style="text-align:center;color:#c62828;">🔥 แจ้งกรอกข้อมูลจี้เจี้ยน</h3>
+    <p style="text-align:center;font-size:14px;color:#666;">
+      ใช้สำหรับแจ้งเตือนให้พนักงานกรอกข้อมูลประจำวัน
+    </p>
+    <button class="action red" onclick="sendJijian()">🚨 ส่งแจ้งจี้เจี้ยน</button>
+  </div>
+
+  <div class="footer">
+    © Haidilao Thailand · Designed for Operations
+  </div>
+</div>
+
+<script>
+function showTab(n) {
+  tab1.classList.toggle("active", n===1);
+  tab2.classList.toggle("active", n===2);
+  content1.classList.toggle("hidden", n!==1);
+  content2.classList.toggle("hidden", n!==2);
+}
+
+/* ===== แจกบัตร ===== */
+const CARD_URL = "https://script.google.com/macros/s/AKfycbwmpFZX-KygRGyMtd3dKFUp0OXIfHLMRSZcxP8Hs8JSiYjBkwikX6zzk10EAsyc5X8/exec";
+
+function onColorChange() {
+  const c = color.value;
+  badge.className = "badge " + c;
+  badge.textContent = c==="green"?"เขียว":c==="yellow"?"เหลือง":"แดง";
+  btn.className = "action " + c;
+  scoreWrap.style.display = c==="green" ? "block" : "none";
+}
+onColorChange();
+
+function sendCard() {
+  const params = new URLSearchParams({
+    emp: emp.value,
+    giver: giver.value,
+    color: color.value,
+    reason: reason.value,
+    score: color.value==="green" ? score.value : ""
+  });
+  fetch(`${CARD_URL}?${params}`)
+    .then(()=>alert("✅ ส่งข้อมูลเรียบร้อย"));
+}
+
+/* ===== จี้เจี้ยน ===== */
+const JIJIAN_URL = "https://script.google.com/macros/s/AKfycby-B3amf7giVijea50SHFQP1Svl5V-Pkfh_OudopayCce44L8f5YO-eUesy9wCKKWg/exec";
+function sendJijian() {
+  fetch(JIJIAN_URL, { method:"POST" })
+    .then(()=>alert("🔥 แจ้งจี้เจี้ยนแล้ว"));
+}
+</script>
+
+</body>
+</html>
